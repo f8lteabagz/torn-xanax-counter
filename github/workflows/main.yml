@@ -10,18 +10,27 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # This lets the robot see the full history to fix the jam
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+
       - run: pip install pillow requests
+
       - env:
           TORN_API_KEY: ${{ secrets.TORN_API_KEY }}
         run: python update_stats.py
+
       - name: Push Image
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add xans_counter.jpg
           git commit -m "update stats" || exit 0
-          git push --force
+          # The next two lines clear the traffic jam
+          git fetch origin main
+          git rebase origin/main
+          git push origin main --force
           
