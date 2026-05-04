@@ -1,5 +1,6 @@
 name: Update Torn Stats
 on:
+  push: # <-- This magic word makes it run automatically
   schedule:
     - cron: '0 * * * *'
   workflow_dispatch:
