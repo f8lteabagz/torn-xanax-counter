@@ -1,37 +1,27 @@
-name: Update Torn Stats
+name: Update
 on:
   schedule:
     - cron: '0 * * * *'
   workflow_dispatch:
-
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
-      - name: Install dependencies
-        run: pip install pillow requests
-
-      - name: Run update script
-        env:
+      - run: pip install pillow requests
+      - env:
           TORN_API_KEY: ${{ secrets.TORN_API_KEY }}
         run: python update_stats.py
-
-      - name: Commit and push changes
-        run: |
-          git config --global user.name "StatBot"
+      - run: |
+          git config --global user.name "Bot"
           git config --global user.email "bot@github.com"
           git add xans_counter.jpg
-          git commit -m "Auto-update Xanax stats" || exit 0
+          git commit -m "update" || exit 0
           git pull --rebase
           git push --force
           
